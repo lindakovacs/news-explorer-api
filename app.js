@@ -16,9 +16,12 @@ const NotFoundError = require('./errors/not-found-err');
 const ConflictError = require('./errors/conflict-err');
 
 const { PORT = 3001 } = process.env;
+// const { NODE_ENV, MONGO_URL, PORT = 3000 } = process.env;
+
 const app = express();
 
 mongoose.connect('mongodb://localhost:27017/newsdb', {
+// mongoose.connect(NODE_ENV === 'production' ? MONGO_URL : 'mongodb://localhost:27017/aroundb', {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
