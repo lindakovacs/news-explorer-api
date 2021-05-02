@@ -2,11 +2,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
 const path = require('path');
+const helmet = require('helmet');
 const cors = require('cors');
 const routes = require('./routes/index.js');
 
 const { requestLogger, errorLogger } = require('./middleware/logger');
-const NotFoundError = require('./errors/not-found-err');
+const { limiter } = require('./utils/constants');
 
 // const { PORT = 3000 } = process.env;
 const { PORT = 3001 } = process.env;
@@ -26,6 +27,7 @@ app.use(cors());
 app.options('*', cors());
 app.use(express.json({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
+app.use(helmet());
 app.use(requestLogger);
 
 app.use('/', routes);
@@ -36,6 +38,7 @@ app.get('*', (req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
 });
 
+app.use(limiter);
 app.use(errorLogger);
 app.use(errors());
 
