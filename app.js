@@ -8,6 +8,8 @@ const routes = require('./routes/index.js');
 
 const { requestLogger, errorLogger } = require('./middleware/logger');
 const { limiter } = require('./utils/constants');
+const { errorsHandling } = require('./middleware/errors.js');
+const { ERROR_MESSAGES, STATUS_CODES } = require('./utils/constants');
 
 // const { PORT = 3000 } = process.env;
 const { PORT = 3001 } = process.env;
@@ -35,12 +37,14 @@ app.use('/', routes);
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('*', (req, res) => {
-  res.status(404).send({ message: 'Requested resource not found' });
+  res.status(STATUS_CODES.notFound).send({ message: ERROR_MESSAGES.notFound });
 });
 
 app.use(limiter);
 app.use(errorLogger);
 app.use(errors());
+
+app.use(errorsHandling);
 
 app.listen(PORT, () => {
   console.log(`App listening at port ${PORT}`);

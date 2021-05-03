@@ -4,9 +4,10 @@ const dotenv = require('dotenv');
 
 const BadRequestError = require('../errors/bad-request-err');
 const AuthError = require('../errors/auth-err');
-// const ConflictError = require('../errors/conflict-err');
+const ConflictError = require('../errors/conflict-err');
 
 const User = require('../models/user');
+const { ERROR_MESSAGES, STATUS_CODES } = require('../utils/constants');
 
 dotenv.config();
 const { NODE_ENV, JWT_SECRET } = process.env;
@@ -17,17 +18,18 @@ module.exports.createUser = (req, res, next) => {
     .hash(password, 10)
     .then((hash) => User.create({ name, email, password: hash }))
     // .then((user) => res.status(201).send({ _id: user._id }))
-    .then((user) => res.status(201).send(user))
-
+    .then((user) => res.status(STATUS_CODES.created).send({
+        message: `User ${email} successfully created!`,
+        data: {
+          id: user.id,
+        },
+    }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError(
-          'Unable to create user. Please try again later.'
-        );
+        throw new BadRequestError(ERROR_MESSAGES.userBadRequest);
+      } else if (err.name === 'MongoError') {
+        throw new ConflictError(ERROR_MESSAGES.signup);
       }
-      // } else if (err.name === 'MongoError') {
-      //   throw new ConflictError('User already taken');
-      // }
       next(err);
     })
     .catch(next);
@@ -39,7 +41,7 @@ module.exports.login = (req, res, next) => {
     .select('+password')
     .then((user) => {
       if (!user) {
-        throw new AuthError('Incorrect email or password.');
+        throw new AuthError(ERROR_MESSAGES.signin);
       } else {
         req._id = user._id;
         return bcrypt.compare(password, user.password);
@@ -47,7 +49,7 @@ module.exports.login = (req, res, next) => {
     })
     .then((matched) => {
       if (!matched) {
-        throw new AuthError('Incorrect email or password.');
+        throw new AuthError(ERROR_MESSAGES.signin);
       }
       const token = jwt.sign(
         { _id: req._id },
@@ -56,7 +58,7 @@ module.exports.login = (req, res, next) => {
       );
       res.header('authorization', `Bearer ${token}`);
       res.cookie('token', token, { httpOnly: true });
-      res.status(200).send({ token });
+      res.status(STATUS_CODES.ok).send({ token });
     })
     .catch(next);
 };

@@ -1,31 +1,9 @@
 const router = require('express').Router();
-const { celebrate, Joi } = require('celebrate');
 const { createUser, login } = require('../controllers/auth');
 
-router.post(
-  '/signup',
-  celebrate({
-    body: Joi.object().keys({
-      // about: Joi.string().min(2).max(30),
-      // avatar: Joi.string().uri({ scheme: ['http', 'https'] }),
-      // avatar: Joi.string().uri(),
-      email: Joi.string().required().email(),
-      password: Joi.string().min(8).alphanum().required(),
-      name: Joi.string().min(2).max(30).pattern(new RegExp('^[a-zA-Z-\\s]*$')),
-    }),
-  }),
-  createUser,
-);
+const { validateCreateUser, validateLogin } = require('../middleware/validator');
 
-router.post(
-  '/signin',
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required(),
-    }),
-  }),
-  login,
-);
+router.post('/signup', validateCreateUser, createUser);
+router.post('/signin', validateLogin, login);
 
 module.exports = router;

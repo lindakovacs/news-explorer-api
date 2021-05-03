@@ -1,48 +1,14 @@
 const router = require('express').Router();
-const { celebrate, Joi } = require('celebrate');
+const auth = require('../middleware/auth');
 
 const {
   getAllUsers,
   getUserById,
 } = require('../controllers/users');
 
-router.get(
-  '/',
-  celebrate({
-    headers: Joi.object()
-      .keys({
-        authorization: Joi.string()
-          .regex(
-            /^(Bearer )[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_.+/=]*$/
-          )
-          .required(),
-      })
-      .options({ allowUnknown: true }),
-  }),
-  getAllUsers
-);
+const { validateId } = require('../middleware/validator');
 
-router.get(
-  '/:id',
-  celebrate({
-    headers: Joi.object()
-      .keys({
-        authorization: Joi.string()
-          .regex(
-            /^(Bearer )[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_.+/=]*$/
-          )
-          .required(),
-      })
-      .options({ allowUnknown: true }),
-    params: Joi.object().keys({
-      // id: Joi.string().alphanum().required(),
-      // id: Joi.string().length(24).hex().required(),
-      id: Joi.string()
-        .regex(/^[A-Fa-f0-9]*/)
-        .required(),
-    }),
-  }),
-  getUserById
-);
+router.get('/', auth, getAllUsers);
+router.get('/:id', auth, validateId, getUserById);
 
 module.exports = router;
