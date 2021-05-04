@@ -1,0 +1,24 @@
+{
+  "extends": "airbnb-base",
+  "rules": {
+    "no-console": "off",
+    // "no-underscore-dangle": "off",
+    "no-underscore-dangle": [
+      "error",
+      {
+        "allow": [
+          "_id"
+        ]
+      }
+    ],
+    "object-curly-newline": 0,
+    "comma-dangle": "off",
+    "eol-last": "off",
+    "no-unused-vars": "off",
+    "indent": "off"
+  },
+  "globals": {
+    "assert": true,
+    "next": "readonly"
+  }
+}
