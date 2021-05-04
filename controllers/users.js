@@ -11,11 +11,18 @@ module.exports.getAllUsers = (req, res, next) => {
 };
 
 module.exports.getUserById = (req, res, next) => {
+  const { name, email } = req.body;
   User.findById(req.params.id === 'me' ? req.user._id : req.params.id)
     .select('+password')
     .then((user) => {
       if (user) {
-        res.status(STATUS_CODES.ok).send(user);
+        res.status(STATUS_CODES.ok).send({ name, email });
+        // res.status(STATUS_CODES.ok).send({
+        //   data: {
+        //     name,
+        //     email,
+        //   },
+        // });
       } else {
         throw new NotFoundError(ERROR_MESSAGES.userBadRequest);
       }

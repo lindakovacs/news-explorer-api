@@ -9,16 +9,18 @@ const routes = require('./routes/index.js');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 const { limiter } = require('./utils/constants');
 const { errorsHandling } = require('./middleware/errors.js');
-const { ERROR_MESSAGES, STATUS_CODES } = require('./utils/constants');
+const {
+  ERROR_MESSAGES,
+  STATUS_CODES,
+  DB_ADDRESS,
+} = require('./utils/constants');
 
 // const { PORT = 3000 } = process.env;
 const { PORT = 3001 } = process.env;
-// const { NODE_ENV, MONGO_URL, PORT = 3000 } = process.env;
 
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/newsdb', {
-// mongoose.connect(NODE_ENV === 'production' ? MONGO_URL : 'mongodb://localhost:27017/aroundb', {
+mongoose.connect(DB_ADDRESS, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,

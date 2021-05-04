@@ -40,7 +40,8 @@ module.exports.createArticle = (req, res, next) => {
 };
 
 module.exports.deleteArticle = (req, res, next) => {
-  Article.findByIdAndRemove(req.params.articleId)
+  Article.findById(req.params.articleId)
+    // Article.findByIdAndRemove(req.params.articleId)
     .select('+owner')
     .then((article) => {
       if (article && req.user._id.toString() === article.owner.toString()) {
@@ -54,7 +55,8 @@ module.exports.deleteArticle = (req, res, next) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'CastError' || err.statusCode === 404) {
+      // if (err.name === 'CastError') {
+        if (err.name === 'CastError' || err.statusCode === 404) {
         throw new NotFoundError(ERROR_MESSAGES.articleNotFound);
       }
       next(err);

@@ -1,5 +1,13 @@
 const rateLimit = require('express-rate-limit');
 
+const { NODE_ENV, SERVER_DB_ADDRESS } = process.env;
+
+module.exports.DB_ADDRESS = NODE_ENV === 'production'
+    ? SERVER_DB_ADDRESS
+    : 'mongodb://localhost:27017/newsdb';
+
+module.exports.DEV_KEY = 'dev-secret';
+
 module.exports.limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
