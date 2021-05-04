@@ -28,7 +28,6 @@ module.exports.ERROR_MESSAGES = {
   serverError: 'An error has occured on the server.',
   articlebadRequest: 'Data validation failed.',
   articleNotFound: 'Article not found.',
-  userNotFound: 'User not found',
   deleteArticle: 'You can only delete your own articles.',
   signin: 'Incorrect email or password.',
   signup: 'Unable to create a user with the credentials provided.',

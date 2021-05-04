@@ -29,6 +29,6 @@ module.exports.validateCreateArticle = celebrate({
 
 module.exports.validateId = celebrate({
   params: Joi.object().keys({
-    articleId: Joi.string().required().alphanum(),
+    id: Joi.string().required().alphanum(),
   }),
 });

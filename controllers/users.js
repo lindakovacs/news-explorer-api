@@ -16,13 +16,14 @@ module.exports.getUserById = (req, res, next) => {
     .select('+password')
     .then((user) => {
       if (user) {
-        res.status(STATUS_CODES.ok).send({ name, email });
-        // res.status(STATUS_CODES.ok).send({
-        //   data: {
-        //     name,
-        //     email,
-        //   },
-        // });
+        // res.status(STATUS_CODES.ok).send({ name, email });
+        res.status(STATUS_CODES.ok).send({
+          data: {
+            id: user.id,
+            name,
+            email,
+          },
+        });
       } else {
         throw new NotFoundError(ERROR_MESSAGES.userBadRequest);
       }

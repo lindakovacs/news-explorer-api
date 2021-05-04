@@ -40,11 +40,12 @@ module.exports.createArticle = (req, res, next) => {
 };
 
 module.exports.deleteArticle = (req, res, next) => {
-  Article.findById(req.params.articleId)
-    // Article.findByIdAndRemove(req.params.articleId)
+    Article.findById(req.params.id)
+    // Article.findByIdAndRemove(req.params.id)
     .select('+owner')
     .then((article) => {
-      if (article && req.user._id.toString() === article.owner.toString()) {
+        if (article && req.user._id.toString() === article.owner.toString()) {
+      // if (article && req.user._id === article.owner) {
         Article.deleteOne(article).then((deletedArticle) => {
           res.status(STATUS_CODES.ok).send(deletedArticle);
         });

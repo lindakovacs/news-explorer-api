@@ -11,6 +11,6 @@ const { validateId, validateCreateArticle } = require('../middleware/validator')
 
 router.get('/', auth, getAllArticles);
 router.post('/', auth, validateCreateArticle, createArticle);
-router.delete('/:articleId', auth, validateId, deleteArticle);
+router.delete('/:id', auth, validateId, deleteArticle);
 
 module.exports = router;
