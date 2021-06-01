@@ -9,6 +9,6 @@ const {
 const { validateId } = require('../middleware/validator');
 
 router.get('/', auth, getAllUsers);
-router.get('/:id', auth, validateId, getUserById);
+router.get('/me', auth, validateId, getUserById);
 
 module.exports = router;

@@ -18,25 +18,28 @@ module.exports.getAllArticles = (req, res, next) => {
 };
 
 module.exports.createArticle = (req, res, next) => {
-  const { keyword, title, text, date, source, link, image } = req.body;
-  Article.create({
-    keyword,
-    title,
-    text,
-    date,
-    source,
-    link,
-    image,
-    owner: req.user._id,
-  })
+  // const { keyword, title, text, date, source, link, image } = req.body;
+  // Article.create({
+  //   keyword,
+  //   title,
+  //   text,
+  //   date,
+  //   source,
+  //   link,
+  //   image,
+  //   owner: req.user._id,
+  // })
     // Article.create({ ...req.body, owner: req.user._id })
-    .then((article) => res.status(STATUS_CODES.created).send({ data: article }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        throw new BadRequestError(ERROR_MESSAGES.articleBadRequest);
-      }
-    })
-    .catch(next);
+    // .then((article) => res.status(STATUS_CODES.created).send({ data: article }))
+    // .catch((err) => {
+    //   if (err.name === 'ValidationError') {
+    //     throw new BadRequestError(ERROR_MESSAGES.articleBadRequest);
+    //   }
+    // })
+    // .catch(next);
+    Article.create({ ...req.body, owner: req.user._id })
+      .then((article) => res.send(article))
+      .catch(next);
 };
 
 module.exports.deleteArticle = (req, res, next) => {
