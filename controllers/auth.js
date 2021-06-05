@@ -5,12 +5,25 @@ const dotenv = require('dotenv');
 const BadRequestError = require('../errors/bad-request-err');
 const AuthError = require('../errors/auth-err');
 const ConflictError = require('../errors/conflict-err');
+const NotFoundError = require('../errors/not-found-err');
 
 const User = require('../models/user');
 const { ERROR_MESSAGES, STATUS_CODES, DEV_KEY } = require('../utils/constants');
 
 dotenv.config();
 const { NODE_ENV, JWT_SECRET } = process.env;
+
+// module.exports.getUser = (req, res, next) => {
+//   User.findById(req.user._id)
+//     .orFail(() => new NotFoundError('User not Found'))
+//     .then((user) => {
+//       const {
+//         _doc: { password, ...props },
+//       } = user;
+//       res.send({ data: props });
+//     })
+//     .catch(next);
+// };
 
 module.exports.createUser = (req, res, next) => {
   const { name, email, password } = req.body;
@@ -20,12 +33,14 @@ module.exports.createUser = (req, res, next) => {
     // .then((hash) => User.create({ name, email }))
     // .then((user) => res.status(201).send({ _id: user._id }))
     .then((user) => res.status(STATUS_CODES.created).send({
-        message: `User ${email} successfully created!`,
-        data: {
-          id: user.id,
-          name,
-          email
-        },
+        email: user.email,
+        _id: user._id,
+        // message: `User ${email} successfully created!`,
+        // data: {
+        //   id: user.id,
+        //   name,
+        //   email
+        // },
       }))
     .catch((err) => {
       if (err.name === 'ValidationError') {

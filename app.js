@@ -20,11 +20,27 @@ const { PORT = 3001 } = process.env;
 
 const app = express();
 
+const allowedCors = [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://newsapi.org/v2',
+  'http://nomoreparties.co/news/v2',
+];
+
 mongoose.connect(DB_ADDRESS, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
   useUnifiedTopology: true,
+});
+
+app.use((req, res, next) => {
+  const { origin } = req.headers;
+
+  if (allowedCors.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  next();
 });
 
 app.use(cors());
