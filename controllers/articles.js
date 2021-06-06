@@ -7,8 +7,8 @@ const NotFoundError = require('../errors/not-found-err');
 const AuthError = require('../errors/auth-err');
 
 module.exports.getArticles = (req, res, next) => {
-  Article.find({ owner: req.user._id })
-  // Article.find({})
+  // Article.find({ owner: req.user._id })
+  Article.find({})
     .then((articles) => res.status(STATUS_CODES.ok).send({ data: articles }))
     // .then((articles) => res.send(articles))
     .catch(() => {
@@ -17,19 +17,25 @@ module.exports.getArticles = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.createArticle = (req, res, next) => {
-    const { keyword, title, text, date, source, link, image } = req.body;
-    Article.create({
-      keyword,
-      title,
-      text,
-      date,
-      source,
-      link,
-      image,
-      owner: req.user._id,
+module.exports.addArticle = (req, res, next) => {
+  const { keyword, title, text, date, source, link, image } = req.body;
+
+  Article.create({
+    keyword,
+    title,
+    text,
+    date,
+    source,
+    link,
+    image,
+    owner: req.user._id,
+  })
+    .then((data) => {
+      const articleData = data.toObj();
+      const { owner, ...article } = articleData;
+      res.status(STATUS_CODES.created).send(article);
     })
-    .then((article) => res.status(STATUS_CODES.created).send(article))
+    // .then((article) => res.status(STATUS_CODES.created).send(article))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         throw new BadRequestError(ERROR_MESSAGES.articleBadRequest);
@@ -40,7 +46,7 @@ module.exports.createArticle = (req, res, next) => {
 
 module.exports.deleteArticle = (req, res, next) => {
     Article.findById(req.params.articleId)
-      // Article.findByIdAndRemove(req.params.id)
+      // Article.findByIdAndRemove(req.params.articleId)
       .select('+owner')
       .then((article) => {
         if (article && req.user._id.toString() === article.owner.toString()) {
