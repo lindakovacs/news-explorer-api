@@ -9,7 +9,7 @@ const AuthError = require('../errors/auth-err');
 module.exports.getArticles = (req, res, next) => {
   // Article.find({ owner: req.user._id })
   Article.find({})
-    .then((articles) => res.status(STATUS_CODES.ok).send({ data: articles }))
+    .then((articles) => res.status(STATUS_CODES.ok).send(articles))
     // .then((articles) => res.send(articles))
     .catch(() => {
       throw new ServerError(ERROR_MESSAGES.internalServer);
@@ -19,6 +19,7 @@ module.exports.getArticles = (req, res, next) => {
 
 module.exports.addArticle = (req, res, next) => {
   const { keyword, title, text, date, source, link, image } = req.body;
+  const owner = req.user._id;
 
   Article.create({
     keyword,
@@ -28,14 +29,26 @@ module.exports.addArticle = (req, res, next) => {
     source,
     link,
     image,
-    owner: req.user._id,
+    owner,
   })
-    .then((data) => {
-      const articleData = data.toObj();
-      const { owner, ...article } = articleData;
-      res.status(STATUS_CODES.created).send(article);
-    })
-    // .then((article) => res.status(STATUS_CODES.created).send(article))
+    // const { keyword, title, text, date, source, link, image } = req.body;
+
+    // Article.create({
+    //   keyword,
+    //   title,
+    //   text,
+    //   date,
+    //   source,
+    //   link,
+    //   image,
+    //   owner: req.user._id,
+    // })
+    // .then((data) => {
+    //   const articleData = data.toObj();
+    //   const { owner, ...article } = articleData;
+    //   res.status(STATUS_CODES.created).send(article);
+    // })
+    .then((article) => res.status(STATUS_CODES.ok).send(article))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         throw new BadRequestError(ERROR_MESSAGES.articleBadRequest);
