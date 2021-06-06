@@ -7,8 +7,8 @@ const NotFoundError = require('../errors/not-found-err');
 const AuthError = require('../errors/auth-err');
 
 module.exports.getArticles = (req, res, next) => {
-  // Article.find({ owner: req.user._id })
-  Article.find({})
+  Article.find({ owner: req.user._id })
+  // Article.find({})
     .then((articles) => res.status(STATUS_CODES.ok).send({ data: articles }))
     // .then((articles) => res.send(articles))
     .catch(() => {
@@ -18,18 +18,18 @@ module.exports.getArticles = (req, res, next) => {
 };
 
 module.exports.createArticle = (req, res, next) => {
-  const { keyword, title, text, date, source, link, image } = req.body;
-  Article.create({
-    keyword,
-    title,
-    text,
-    date,
-    source,
-    link,
-    image,
-    owner: req.user._id,
-  })
-    .then((article) => res.status(STATUS_CODES.created).send({ data: article }))
+    const { keyword, title, text, date, source, link, image } = req.body;
+    Article.create({
+      keyword,
+      title,
+      text,
+      date,
+      source,
+      link,
+      image,
+      owner: req.user._id,
+    })
+    .then((article) => res.status(STATUS_CODES.created).send(article))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         throw new BadRequestError(ERROR_MESSAGES.articleBadRequest);

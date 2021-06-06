@@ -11,8 +11,8 @@ module.exports.getAllUsers = (req, res, next) => {
 };
 
 module.exports.getUser = (req, res, next) => {
-  User.findById(req.user._id)
-    .orFail(NotFoundError('User not Found'))
+  User.findById(req.user ? req.user._id : '')
+    .orFail(new NotFoundError('User not Found'))
     .then(({ email, name }) => res.status(STATUS_CODES.ok).send({ email, name }))
     .catch(next);
   // .then((user) => {
