@@ -23,8 +23,9 @@ const app = express();
 const allowedCors = [
   'http://localhost:3000',
   'http://localhost:3001',
-  'http://newsapi.org/v2',
-  'http://nomoreparties.co/news/v2',
+  'https://newsapi.org/v2',
+  'https://nomoreparties.co/news/v2',
+  'https://lkovacs-news.students.nomoreparties.site',
 ];
 
 mongoose.connect(DB_ADDRESS, {
