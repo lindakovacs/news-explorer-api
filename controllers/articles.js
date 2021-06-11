@@ -7,8 +7,8 @@ const NotFoundError = require('../errors/not-found-err');
 const AuthError = require('../errors/auth-err');
 
 module.exports.getArticles = (req, res, next) => {
-  // Article.find({ owner: req.user._id })
-  Article.find({})
+  Article.find({ owner: req.user._id })
+  // Article.find({})
     .then((articles) => res.status(STATUS_CODES.ok).send(articles))
     // .then((articles) => res.send(articles))
     .catch(() => {
